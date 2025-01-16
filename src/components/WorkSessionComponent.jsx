@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { startWorkSession, endWorkSession } from '../services/WorkSessionService';
+import { listWorkSessions, listWorkSessionsbyDate, updateWorkSession } from '../services/WorkSessionService';
+
 
 function WorkSessionComponent() {
   const { employeeName } = useParams();
@@ -9,11 +11,31 @@ function WorkSessionComponent() {
   const [isWorkStarted, setIsWorkStarted] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [workSessions, setWorkSessions] = useState([]);
+  
 
   useEffect(() => {
     const savedStatus = localStorage.getItem(`workStatus-${employeeName}`);
     if (savedStatus === 'started') {
       setIsWorkStarted(true);
+    }
+  }, [employeeName]);
+
+    const fetchWorkSessions = () => {
+        listWorkSessions(employeeName)
+          .then((response) => {
+            setWorkSessions(response.data);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+    };
+
+    
+
+  useEffect(() => {
+    if (employeeName) {
+      fetchWorkSessions();
     }
   }, [employeeName]);
 
@@ -88,6 +110,31 @@ function WorkSessionComponent() {
           </div>
         </div>
       )}
+
+<table className="table table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Startzeit</th>
+            <th>Endzeit</th>
+            <th>Gesamte Arbeitszeit</th>
+            <th>Datum</th>
+          </tr>
+        </thead>
+        <tbody>
+          {workSessions.map((workSession) => (
+            <tr key={workSession.id}>
+              <td>{workSession.employeeName}</td>
+              <td>{workSession.startTime}</td>
+              <td>{workSession.endTime}</td>
+              <td>{workSession.totalWorkTime}</td>
+              <td>{workSession.date}</td>
+              <td>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
