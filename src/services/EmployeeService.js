@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://192.168.2.174:8080/api/work-sessions/employee'; 
+const apiUrl = import.meta.env.VITE_API_URL;
+
+const API_BASE_URL = `${apiUrl}/api/work-sessions/employee`; 
 
 export const getAllEmployees = async () => {
   const response = await axios.get(API_BASE_URL);
