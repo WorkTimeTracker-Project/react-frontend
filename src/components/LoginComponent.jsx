@@ -7,10 +7,13 @@ function LoginComponent() {
   const navigate = useNavigate();
 
   const handleLogin = () => {
-    if (username === 'admin' && password === 'admin') {
+    if (username === 'ömer' && password === 'admin' || username === "candirik" && password === "admin") {
+      localStorage.setItem('username', username);
       localStorage.setItem('isLoggedIn', 'true');
 
-      navigate('/erfassung/arbeitszeiten');
+      setTimeout(() => {
+        navigate('/erfassung/arbeitszeiten');
+      }, 50);
     } else {
       alert('Falsche Anmeldedaten');
     }
