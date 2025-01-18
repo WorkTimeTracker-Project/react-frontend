@@ -21,6 +21,11 @@ export const deleteEmployee = async (name) => {
   return response.data;
 };
 
+export const getAccount = async (username) => {
+    const response = await axios.get(`${API_BASE_URL}/account/${username}`);
+    return response.data;
+}
+
 
 export const fetchEmployees = async (setEmployees, setEmployeeName) => {
     try {

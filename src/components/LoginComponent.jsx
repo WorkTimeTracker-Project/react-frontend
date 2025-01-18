@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getAccount } from '../services/EmployeeService';
 
 function LoginComponent() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    if (username === 'ömer' && password === 'admin' || username === "candirik" && password === "admin") {
+  const handleLogin = async () => {
+
+    const account = await getAccount(username);
+    console.log(account);
+
+    if (account != null && username === account.username && password === account.password) {
       localStorage.setItem('username', username);
+      localStorage.setItem('password', password);
       localStorage.setItem('isLoggedIn', 'true');
 
       setTimeout(() => {
