@@ -18,16 +18,16 @@ function ListWorkSession() {
   const fetchWorkSessions = () => {
     if (filterByDate && startDate && endDate) {
       listWorkSessionsbyDate(employeeName, startDate, endDate)
-        .then((response) => {
-          setWorkSessions(response.data);
+        .then((sortedSessions) => {
+          setWorkSessions(sortedSessions);
         })
         .catch((error) => {
           console.error(error);
         });
     } else {
       listWorkSessions(employeeName)
-        .then((response) => {
-          setWorkSessions(response.data);
+        .then((sortedSessions) => {
+          setWorkSessions(sortedSessions);
         })
         .catch((error) => {
           console.error(error);
@@ -80,7 +80,7 @@ function ListWorkSession() {
       ]),
     ];
 
-    const ws = XLSX.utils.json_to_sheet(wsData);
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Arbeitszeiten');
     XLSX.writeFile(wb, 'Arbeitszeiten.xlsx');

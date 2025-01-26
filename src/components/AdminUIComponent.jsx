@@ -6,7 +6,8 @@ function AdminUIComponent() {
   const navigate = useNavigate();
 
   const handlePasswordSubmit = () => {
-    if (password === localStorage.getItem('password')) { 
+    const adminPasswort = localStorage.getItem('password')+"!";
+    if (password === adminPasswort) { 
       localStorage.setItem('isLoggedInAdmin', 'true');
       navigate('/admin-dashboard'); 
     } else {

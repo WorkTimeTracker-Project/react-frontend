@@ -8,20 +8,21 @@ function WorkSessionComponent() {
   const { employeeName } = useParams();
   const navigate = useNavigate();
 
-  const [isWorkStarted, setIsWorkStarted] = useState(false);
+  const [isWorkStarted, setIsWorkStarted] = useState();
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [workSessions, setWorkSessions] = useState([]);
   
 
-  useEffect(() => {
+/*  useEffect(() => {
     const savedStatus = localStorage.getItem(`workStatus-${employeeName}`);
     if (savedStatus === 'started') {
       setIsWorkStarted(true);
     }
   }, [employeeName]);
+*/
 
-    const fetchWorkSessions = () => {
+/*    const fetchWorkSessions = () => {
         listWorkSessions(employeeName)
           .then((response) => {
             setWorkSessions(response.data);
@@ -30,7 +31,32 @@ function WorkSessionComponent() {
             console.error(error);
           });
     };
+*/
+    const fetchWorkSessions = () => {
+      listWorkSessions(employeeName)
+        .then((sortedSessions) => {
+          setWorkSessions(sortedSessions);
 
+          console.log(sortedSessions);
+          console.log(sortedSessions.endTime);
+          console.log(sortedSessions.length)
+          console.log(sortedSessions[sortedSessions.length - 1]);
+  
+          const lastSession = sortedSessions[sortedSessions.length - 1];
+          if (lastSession.endTime == null) {
+            console.log("last session is open")
+            setIsWorkStarted(true);
+          } else {
+            console.log("last session closed")
+            setIsWorkStarted(false);
+          }
+
+          console.log(isWorkStarted);
+        })
+        .catch((error) => {
+          console.error('Fehler beim Laden der Arbeitszeiten:', error);
+        });
+    };
     
 
   useEffect(() => {
@@ -45,8 +71,9 @@ function WorkSessionComponent() {
         setIsWorkStarted(true);
         setToastMessage(`Arbeitszeit für ${employeeName} wurde gestartet!`);
         setShowToast(true);
-        localStorage.setItem(`workStatus-${employeeName}`, 'started');
+       // localStorage.setItem(`workStatus-${employeeName}`, 'started');
         setTimeout(() => {
+          setShowToast(false); 
           navigate('/erfassung/arbeitszeiten');
         }, 2000);
       })
@@ -54,6 +81,10 @@ function WorkSessionComponent() {
         console.error(error);
         setToastMessage('Fehler beim Starten der Arbeitszeit!');
         setShowToast(true);
+        setTimeout(() => {
+          setShowToast(false); 
+          navigate('/erfassung/arbeitszeiten');
+        }, 2000);
       });
   };
 
@@ -63,15 +94,20 @@ function WorkSessionComponent() {
         setIsWorkStarted(false);
         setToastMessage(`Arbeitszeit für ${employeeName} wurde beendet!`);
         setShowToast(true);
-        localStorage.setItem(`workStatus-${employeeName}`, 'ended');
+       // localStorage.setItem(`workStatus-${employeeName}`, 'ended');
         setTimeout(() => {
+          setShowToast(false); 
           navigate('/erfassung/arbeitszeiten');
         }, 2000);
       })
       .catch(error => {
         console.error(error);
-        setToastMessage('Fehler beim Beenden der Arbeitszeit!');
+        setToastMessage('Arbeitszeit wird automatisch beendet!');
         setShowToast(true);
+        setTimeout(() => {
+          setShowToast(false); 
+          navigate('/erfassung/arbeitszeiten');
+        }, 2000);
       });
   };
 

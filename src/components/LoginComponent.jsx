@@ -10,8 +10,6 @@ function LoginComponent() {
   const handleLogin = async () => {
 
     const account = await getAccount(username);
-    console.log(account);
-
     if (account != null && username === account.username && password === account.password) {
       localStorage.setItem('username', username);
       localStorage.setItem('password', password);
